@@ -7,7 +7,7 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-@await Html.PartialAsync("/Views/Shared/EmployeeTable.cshtml", new List<CRUD_MVC.Models.Employee> { new CRUD_MVC.Models.Employee { id = 1 } })
+@*@await Html.PartialAsync("/Views/Shared/_EmployeeTable.cshtml", new List<CRUD_MVC.Models.Employee> { new CRUD_MVC.Models.Employee { id = 1 } })*@
 
-@*@{Html.RenderAction("GetAddress", "Home");}
-@{Html.RenderAction("ChildAction", "Home", new { param = "first" });}*@ 
+
+@await Component.InvokeAsync("EmployeeTable", new { employees = new List<CRUD_MVC.Models.Employee> { new CRUD_MVC.Models.Employee { id = 1 } } })
