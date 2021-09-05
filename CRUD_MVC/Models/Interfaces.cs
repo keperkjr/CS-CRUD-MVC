@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,13 +31,21 @@ namespace CRUD_MVC.Models
 
     public class Employee
     {
+        [Display(Name = "Id #")]
         public int id { get; set; }
+        [Display(Name = "Name")]
         public string name { get; set; }
+        [Display(Name = "UserName")]
         public string username { get; set; }
+        [Display(Name = "Email")]
         public string email { get; set; }
+        [Display(Name = "Address")]
         public Address address { get; set; }
+        [Display(Name = "Phone #")]
         public string phone { get; set; }
+        [Display(Name = "Website")]
         public string website { get; set; }
+        [Display(Name = "Company")]
         public Company company { get; set; }
     }
 }

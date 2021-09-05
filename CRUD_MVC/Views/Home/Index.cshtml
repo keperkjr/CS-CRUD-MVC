@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<CRUD_MVC.Models.Employee>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -7,7 +9,7 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-@*@await Html.PartialAsync("/Views/Shared/_EmployeeTable.cshtml", new List<CRUD_MVC.Models.Employee> { new CRUD_MVC.Models.Employee { id = 1 } })*@
-
-
-@await Component.InvokeAsync("EmployeeTable", new { employees = new List<CRUD_MVC.Models.Employee> { new CRUD_MVC.Models.Employee { id = 1 } } })
+@if (Model != null)
+{
+    @await Component.InvokeAsync("EmployeeTable", new { employees = Model })
+}

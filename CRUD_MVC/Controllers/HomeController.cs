@@ -20,7 +20,8 @@ namespace CRUD_MVC.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var employees = new List<CRUD_MVC.Models.Employee> { new CRUD_MVC.Models.Employee { id = 1 } };
+            return View(employees);
         }
 
         public IActionResult Privacy()
