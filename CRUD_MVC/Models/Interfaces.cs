@@ -58,4 +58,10 @@ namespace CRUD_MVC.Models
         };
         public Action operation { get; set; } = Action.Create;
     }
+
+    public class IndexViewModel
+    {
+        public IEnumerable<CRUD_MVC.Models.Employee> employees { get; set; }
+        public CRUD_MVC.Models.Employee employee { get; set; }
+    }
 }

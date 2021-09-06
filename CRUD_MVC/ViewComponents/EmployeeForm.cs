@@ -14,7 +14,9 @@ namespace CRUD_MVC.ViewComponents
             var model = new CRUD_MVC.Models.EmployeeViewModel();
             model.operation = CRUD_MVC.Models.EmployeeViewModel.Action.Create;
             if (employee != null) {
-                model = (CRUD_MVC.Models.EmployeeViewModel)employee;
+                model.id = employee.id;
+                model.name = employee.name;
+                model.email = employee.email;
                 model.operation = CRUD_MVC.Models.EmployeeViewModel.Action.Update;
             }
             return await Task.FromResult((IViewComponentResult)View(model));

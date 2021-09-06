@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CRUD_MVC.Models.Employee>
+﻿@model CRUD_MVC.Models.IndexViewModel
 
 @{
     ViewData["Title"] = "Home Page";
@@ -9,9 +9,5 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-@await Component.InvokeAsync(nameof(CRUD_MVC.ViewComponents.EmployeeForm))
-
-@if (Model != null)
-{
-    @await Component.InvokeAsync(nameof(CRUD_MVC.ViewComponents.EmployeeTable), new { employees = Model })
-}
+@await Component.InvokeAsync(nameof(CRUD_MVC.ViewComponents.EmployeeForm), new { employee = Model.employee })
+@await Component.InvokeAsync(nameof(CRUD_MVC.ViewComponents.EmployeeTable), new { employees = Model.employees })

@@ -21,22 +21,52 @@ namespace CRUD_MVC.Controllers
 
         public IActionResult Index()
         {
+            return ShowIndex();
+        }
+
+        [HttpGet("/{id}")]
+        public IActionResult Index(int id)
+        {
+            return ShowIndex(id);
+        }
+
+        private IActionResult ShowIndex(int? id = null)
+        {
             if (employees == null)
             {
                 FetchEmployees();
             }
-
-            return View(employees);
+            var model = new CRUD_MVC.Models.IndexViewModel()
+            {
+                employees = employees,
+                employee = id.HasValue ? employees.FirstOrDefault(x => x.id == id) : null
+            };
+            return View(nameof(Index), model);
         }
 
-        public IActionResult Modify(CRUD_MVC.Models.EmployeeViewModel employee)
+        public IActionResult Modify(CRUD_MVC.Models.EmployeeViewModel employeeView)
         {
-            if (employee == null)
+            CRUD_MVC.Models.Employee employee = null;
+            switch (employeeView.operation)
             {
-                Debug.Print("");
-            }
+                case CRUD_MVC.Models.EmployeeViewModel.Action.Create:
+                    int lastId = employees.Count > 0 ? employees.Max((x) => x.id) : 0;
+                    employee = new CRUD_MVC.Models.Employee();
+                    employee.id = lastId + 1;
+                    employee.name = employeeView.name;
+                    employee.email = employeeView.email;
+                    employees.Add(employee);
+                    break;
+                case CRUD_MVC.Models.EmployeeViewModel.Action.Update:
 
+                    break;
+            }
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Edit(int id)
+        {
+            return RedirectToAction(nameof(Index), new { id = id });
         }
 
         private static void FetchEmployees()
