@@ -48,4 +48,14 @@ namespace CRUD_MVC.Models
         [Display(Name = "Company")]
         public Company company { get; set; }
     }
+
+    public class EmployeeViewModel : Employee
+    {
+        public enum Action
+        {
+            Create,
+            Update
+        };
+        public Action operation { get; set; } = Action.Create;
+    }
 }

@@ -11,7 +11,8 @@ namespace CRUD_MVC.ViewComponents
     {
         public async Task<IViewComponentResult> InvokeAsync(IEnumerable<CRUD_MVC.Models.Employee> employees)
         {
-            return await Task.FromResult((IViewComponentResult)View(employees));
+            var model = employees;
+            return await Task.FromResult((IViewComponentResult)View(model));
         }
 
     }

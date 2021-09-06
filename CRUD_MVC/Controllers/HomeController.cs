@@ -28,7 +28,17 @@ namespace CRUD_MVC.Controllers
 
             return View(employees);
         }
-        
+
+        public IActionResult Modify(CRUD_MVC.Models.EmployeeViewModel employee)
+        {
+            if (employee == null)
+            {
+                Debug.Print("");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         private static void FetchEmployees()
         {
             var url = "https://jsonplaceholder.typicode.com/users";
