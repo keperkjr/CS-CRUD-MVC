@@ -12,6 +12,7 @@ namespace CRUD_MVC.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private static List<CRUD_MVC.Models.Employee> employees = null;
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -20,8 +21,22 @@ namespace CRUD_MVC.Controllers
 
         public IActionResult Index()
         {
-            var employees = new List<CRUD_MVC.Models.Employee> { new CRUD_MVC.Models.Employee { id = 1 } };
+            if (employees == null)
+            {
+                FetchEmployees();
+            }
+
             return View(employees);
+        }
+        
+        private static void FetchEmployees()
+        {
+            var url = "https://jsonplaceholder.typicode.com/users";
+            var response = Utils.WebRequest.Get(url);
+            if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                employees = Utils.Json.Deserialize<List<CRUD_MVC.Models.Employee>>(response.Body);
+            }
         }
 
         public IActionResult Privacy()

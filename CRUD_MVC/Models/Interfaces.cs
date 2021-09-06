@@ -35,7 +35,7 @@ namespace CRUD_MVC.Models
         public int id { get; set; }
         [Display(Name = "Name")]
         public string name { get; set; }
-        [Display(Name = "UserName")]
+        [Display(Name = "User Name")]
         public string username { get; set; }
         [Display(Name = "Email")]
         public string email { get; set; }
