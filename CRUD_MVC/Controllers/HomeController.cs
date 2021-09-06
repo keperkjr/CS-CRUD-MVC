@@ -24,12 +24,6 @@ namespace CRUD_MVC.Controllers
             return ShowIndex();
         }
 
-        [HttpGet("/{id}")]
-        public IActionResult Index(int id)
-        {
-            return ShowIndex(id);
-        }
-
         private IActionResult ShowIndex(int? id = null)
         {
             if (employees == null)
@@ -44,29 +38,42 @@ namespace CRUD_MVC.Controllers
             return View(nameof(Index), model);
         }
 
-        public IActionResult Modify(CRUD_MVC.Models.EmployeeViewModel employeeView)
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult Index(CRUD_MVC.Models.EmployeeViewModel employeeView)
         {
+            ViewData["FormMessage"] = "";
             CRUD_MVC.Models.Employee employee = null;
-            switch (employeeView.operation)
+            switch (employeeView.action)
             {
-                case CRUD_MVC.Models.EmployeeViewModel.Action.Create:
+                case CRUD_MVC.Models.EmployeeViewModel.Action.Add:
                     int lastId = employees.Count > 0 ? employees.Max((x) => x.id) : 0;
                     employee = new CRUD_MVC.Models.Employee();
                     employee.id = lastId + 1;
                     employee.name = employeeView.name;
                     employee.email = employeeView.email;
                     employees.Add(employee);
+                    ViewData["FormMessage"] = "Employee successfully added";
                     break;
                 case CRUD_MVC.Models.EmployeeViewModel.Action.Update:
-
+                    employee = employees.FirstOrDefault((x) => x.id == employeeView.id);
+                    employee.name = employeeView.name;
+                    employee.email = employeeView.email;
+                    ViewData["FormMessage"] = "Employee successfully updated";
                     break;
             }
-            return RedirectToAction(nameof(Index));
+
+            //return RedirectToAction(nameof(Index));
+
+            // If returning back to the same view, clear model entries
+            ModelState.Clear();
+            return ShowIndex();
         }
 
         public IActionResult Edit(int id)
         {
-            return RedirectToAction(nameof(Index), new { id = id });
+            //return RedirectToAction(nameof(Index), new { id = id });
+            return ShowIndex(id);
         }
 
         private static void FetchEmployees()

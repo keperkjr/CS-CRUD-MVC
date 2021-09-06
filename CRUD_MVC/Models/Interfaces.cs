@@ -34,10 +34,12 @@ namespace CRUD_MVC.Models
         [Display(Name = "Id #")]
         public int id { get; set; }
         [Display(Name = "Name")]
+        [Required(ErrorMessage = "Please enter a name")]
         public string name { get; set; }
         [Display(Name = "User Name")]
         public string username { get; set; }
         [Display(Name = "Email")]
+        [Required(ErrorMessage = "Please enter an email")]
         public string email { get; set; }
         [Display(Name = "Address")]
         public Address address { get; set; }
@@ -53,10 +55,10 @@ namespace CRUD_MVC.Models
     {
         public enum Action
         {
-            Create,
+            Add,
             Update
         };
-        public Action operation { get; set; } = Action.Create;
+        public Action action { get; set; } = Action.Add;
     }
 
     public class IndexViewModel
