@@ -9,8 +9,6 @@ namespace CRUD_MVC.ViewComponents
 {
     public class EmployeeTable : ViewComponent
     {
-        public EmployeeTable()  { }
-
         public async Task<IViewComponentResult> InvokeAsync(IEnumerable<CRUD_MVC.Models.Employee> employees)
         {
             return await Task.FromResult((IViewComponentResult)View(employees));

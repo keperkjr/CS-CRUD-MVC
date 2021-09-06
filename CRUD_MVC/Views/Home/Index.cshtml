@@ -11,5 +11,5 @@
 
 @if (Model != null)
 {
-    @await Component.InvokeAsync("EmployeeTable", new { employees = Model })
+    @await Component.InvokeAsync(nameof(CRUD_MVC.ViewComponents.EmployeeTable), new { employees = Model })
 }
