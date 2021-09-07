@@ -1,4 +1,5 @@
-﻿using CRUD_MVC.Models;
+﻿// https://www.taniarascia.com/getting-started-with-vue/
+using CRUD_MVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -42,8 +43,8 @@ namespace CRUD_MVC.Controllers
         [HttpPost]
         public IActionResult Index(CRUD_MVC.Models.EmployeeViewModel employeeView)
         {
-            ViewData["FormMessage"] = "";
-            ViewData["FormSubmit_Status"] = CRUD_MVC.ViewComponents.EmployeeForm.Status.None;
+            ViewData["PageMessage"] = "";
+            ViewData["PageSubmit_Status"] = CRUD_MVC.ViewComponents.PageStatus.None;
 
             if (string.IsNullOrWhiteSpace(employeeView.name))
             {
@@ -65,22 +66,22 @@ namespace CRUD_MVC.Controllers
                 {
                     case CRUD_MVC.Models.EmployeeViewModel.Action.Add:
                         AddEmployee(employeeView);
-                        ViewData["FormMessage"] = "Employee successfully added";
+                        ViewData["PageMessage"] = "Employee successfully added";
                         break;
                     case CRUD_MVC.Models.EmployeeViewModel.Action.Update:
                         UpdateEmployee(employeeView);
-                        ViewData["FormMessage"] = "Employee successfully updated";
+                        ViewData["PageMessage"] = "Employee successfully updated";
                         break;
                 }
 
                 // If returning back to the same view, clear model entries
                 ModelState.Clear();
-                ViewData["FormSubmit_Status"] = CRUD_MVC.ViewComponents.EmployeeForm.Status.Success;
+                ViewData["PageSubmit_Status"] = CRUD_MVC.ViewComponents.PageStatus.Success;
             } 
             else
             {
-                ViewData["FormSubmit_Status"] = CRUD_MVC.ViewComponents.EmployeeForm.Status.Error;
-                ViewData["FormMessage"] = "Please fill out all required fields";
+                ViewData["PageSubmit_Status"] = CRUD_MVC.ViewComponents.PageStatus.Error;
+                ViewData["PageMessage"] = "Please fill out all required fields";
             }
 
             //return RedirectToAction(nameof(Index));
@@ -90,27 +91,54 @@ namespace CRUD_MVC.Controllers
         private static void AddEmployee(CRUD_MVC.Models.EmployeeViewModel employeeView)
         {
             int lastId = employees.Count > 0 ? employees.Max((x) => x.id) : 0;
-            var employee = new CRUD_MVC.Models.Employee();
-            employee.id = lastId + 1;
-            employee.name = employeeView.name;
-            employee.email = employeeView.email;
-            employees.Add(employee);
+            //var employee = new CRUD_MVC.Models.Employee();
+            //employee.id = lastId + 1;
+            //employee.name = employeeView.name;
+            //employee.email = employeeView.email;
+            //employees.Add(employee);
+
+            var payload = Utils.Json.Serialize(employeeView);
+            var url = "https://jsonplaceholder.typicode.com/users";
+            var response = Utils.WebRequest.Post(url, payload, new Utils.WebRequest.Options() { 
+                ContentType = Utils.WebRequest.ContentType.ApplicationJson
+            });
+
+            var newEmployee = Utils.Json.Deserialize<CRUD_MVC.Models.Employee>(response.Body);
+            newEmployee.id = lastId + 1;
+            employees.Add(newEmployee);
+
         }
 
         private static void UpdateEmployee(CRUD_MVC.Models.EmployeeViewModel employeeView)
         {
-            var employee = employees.FirstOrDefault((x) => x.id == employeeView.id);
-            employee.name = employeeView.name;
-            employee.email = employeeView.email;
+            if (employeeView.id < 11)
+            {
+                var payload = Utils.Json.Serialize(employeeView);
+                var url = $"https://jsonplaceholder.typicode.com/users/{employeeView.id}";
+                var response = Utils.WebRequest.Put(url, payload, new Utils.WebRequest.Options()
+                {
+                    ContentType = Utils.WebRequest.ContentType.ApplicationJson
+                });
+
+                var newEmployee = Utils.Json.Deserialize<CRUD_MVC.Models.Employee>(response.Body);
+                var index = employees.FindIndex(x => x.id == employeeView.id);
+                employees[index] = newEmployee;
+            } 
+            else
+            {
+                var employee = employees.FirstOrDefault((x) => x.id == employeeView.id);
+                employee.name = employeeView.name;
+                employee.email = employeeView.email;
+            }
         }
 
         private static void DeleteEmployee(int id)
         {
+            var url = $"https://jsonplaceholder.typicode.com/users/{id}";
+            var response = Utils.WebRequest.Delete(url);
+
             var index = employees.FindIndex(x => x.id == id);
-            if (index > -1)
-            {
-                employees.RemoveAt(index);
-            }
+            employees.RemoveAt(index);
         }
 
         public IActionResult Edit(int id)
@@ -122,6 +150,9 @@ namespace CRUD_MVC.Controllers
         public IActionResult Delete(int id)
         {
             DeleteEmployee(id);
+
+            ViewData["PageMessage"] = "Employee successfully removed";
+            ViewData["PageSubmit_Status"] = CRUD_MVC.ViewComponents.PageStatus.Success;
             return ShowIndex();
         }
 

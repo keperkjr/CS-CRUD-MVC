@@ -9,5 +9,20 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
+@if (ViewData["PageSubmit_Status"] != null)
+{
+    @switch ((CRUD_MVC.ViewComponents.PageStatus)ViewData["PageSubmit_Status"])
+    {
+        case CRUD_MVC.ViewComponents.PageStatus.Success:
+            <p class="success-message">✅ @ViewData["PageMessage"]</p>
+            break;
+        case CRUD_MVC.ViewComponents.PageStatus.Error:
+            <p class="error-message">
+                ❗  @ViewData["PageMessage"]
+            </p>
+            break;
+    }
+}
+
 @await Component.InvokeAsync(nameof(CRUD_MVC.ViewComponents.EmployeeForm), new { employee = Model.employee })
 @await Component.InvokeAsync(nameof(CRUD_MVC.ViewComponents.EmployeeTable), new { employees = Model.employees })
