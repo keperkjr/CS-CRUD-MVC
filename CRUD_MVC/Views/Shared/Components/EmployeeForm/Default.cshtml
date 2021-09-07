@@ -12,15 +12,16 @@
     <div class="col-md-4">
         <form asp-action="Index">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.HiddenFor(m => m.id)
             @Html.HiddenFor(m => m.action)
             <div class="form-group">
                 <label asp-for="name" class="control-label"></label>
-                <input asp-for="name" class="form-control" />
+                <input asp-for="name" class="form-control" autocomplete="off" />
                 <span asp-validation-for="name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="email" class="control-label"></label>
-                <input asp-for="email" class="form-control" />
+                <input asp-for="email" class="form-control" autocomplete="off" />
                 <span asp-validation-for="email" class="text-danger"></span>
             </div>
             @if (ViewData["FormSubmit_Status"] != null)
@@ -38,7 +39,8 @@
                 }
             }
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="@(Model.action == CRUD_MVC.Models.EmployeeViewModel.Action.Add ?
+                                                 "Create" : "Update")" class="btn btn-primary" />
             </div>
         </form>
     </div>
