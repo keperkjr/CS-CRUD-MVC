@@ -101,6 +101,16 @@ namespace CRUD_MVC.Controllers
             return ShowIndex(id);
         }
 
+        public IActionResult Delete(int id)
+        {
+            var index = employees.FindIndex(x => x.id == id);
+            if (index > -1)
+            {
+                employees.RemoveAt(index);
+            }
+            return ShowIndex();
+        }
+
         private static void FetchEmployees()
         {
             var url = "https://jsonplaceholder.typicode.com/users";
