@@ -19,7 +19,7 @@ namespace CRUD_MVC.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync(CRUD_MVC.Models.Employee employee = null)
         {
             var model = new CRUD_MVC.Models.EmployeeViewModel();
-            model.action = CRUD_MVC.Models.EmployeeViewModel.Action.Add;
+            model.action = CRUD_MVC.Models.EmployeeViewModel.Action.Create;
             if (employee != null) {
                 model.id = employee.id;
                 model.name = employee.name;

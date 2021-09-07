@@ -55,10 +55,10 @@ namespace CRUD_MVC.Models
     {
         public enum Action
         {
-            Add,
+            Create,
             Update
         };
-        public Action action { get; set; } = Action.Add;
+        public Action action { get; set; } = Action.Create;
     }
 
     public class IndexViewModel

@@ -1,5 +1,5 @@
 ﻿// https://www.taniarascia.com/getting-started-with-vue/
-using CRUD_MVC.Models;
+using CRUD_MVC.Models; 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -31,6 +31,11 @@ namespace CRUD_MVC.Controllers
             {
                 FetchEmployees();
             }
+
+            foreach (var key in TempData.Keys)
+            {
+                ViewData[key] = TempData[key];
+            }
             var model = new CRUD_MVC.Models.IndexViewModel()
             {
                 employees = employees,
@@ -55,22 +60,17 @@ namespace CRUD_MVC.Controllers
                 ModelState.AddModelError(nameof(employeeView.email), "A valid email is required");
             }
 
-            var errors = ModelState
-                .Where(x => x.Value.Errors.Count > 0)
-                .Select(x => new { x.Key, x.Value.Errors })
-                .ToList();
-
             if (ModelState.IsValid)
             {
                 switch (employeeView.action)
                 {
-                    case CRUD_MVC.Models.EmployeeViewModel.Action.Add:
+                    case CRUD_MVC.Models.EmployeeViewModel.Action.Create:
                         AddEmployee(employeeView);
-                        ViewData["PageMessage"] = "Employee successfully added";
+                        ViewData["PageMessage"] = $"{employeeView.name} successfully created";
                         break;
                     case CRUD_MVC.Models.EmployeeViewModel.Action.Update:
                         UpdateEmployee(employeeView);
-                        ViewData["PageMessage"] = "Employee successfully updated";
+                        ViewData["PageMessage"] = $"{employeeView.name} successfully updated";
                         break;
                 }
 
@@ -80,6 +80,11 @@ namespace CRUD_MVC.Controllers
             } 
             else
             {
+                var errors = ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .Select(x => new { x.Key, x.Value.Errors })
+                    .ToList();
+
                 ViewData["PageSubmit_Status"] = CRUD_MVC.ViewComponents.PageStatus.Error;
                 ViewData["PageMessage"] = "Please fill out all required fields";
             }
@@ -99,7 +104,7 @@ namespace CRUD_MVC.Controllers
 
             var payload = Utils.Json.Serialize(employeeView);
             var url = "https://jsonplaceholder.typicode.com/users";
-            var response = Utils.WebRequest.Post(url, payload, new Utils.WebRequest.Options() { 
+            var response = Utils.WebRequest.Post(url, payload, new Utils.WebRequest.Options() {
                 ContentType = Utils.WebRequest.ContentType.ApplicationJson
             });
 
@@ -149,11 +154,14 @@ namespace CRUD_MVC.Controllers
 
         public IActionResult Delete(int id)
         {
+            var employee = employees.FirstOrDefault((x) => x.id == id);
             DeleteEmployee(id);
 
-            ViewData["PageMessage"] = "Employee successfully removed";
-            ViewData["PageSubmit_Status"] = CRUD_MVC.ViewComponents.PageStatus.Success;
-            return ShowIndex();
+            TempData["PageMessage"] = $"{employee.name} successfully removed";
+            TempData["PageSubmit_Status"] = CRUD_MVC.ViewComponents.PageStatus.Success;
+
+            //return ShowIndex();
+            return RedirectToAction(nameof(Index));
         }
 
         private static void FetchEmployees()
