@@ -23,9 +23,19 @@
                 <input asp-for="email" class="form-control" />
                 <span asp-validation-for="email" class="text-danger"></span>
             </div>
-            @if (!string.IsNullOrWhiteSpace(ViewData["FormMessage"] as string))
+            @if (ViewData["FormSubmit_Status"] != null)
             {
-                <p class="success-message">✅ @ViewData["FormMessage"]</p>
+                @switch ((CRUD_MVC.ViewComponents.EmployeeForm.Status)ViewData["FormSubmit_Status"])
+                {
+                    case CRUD_MVC.ViewComponents.EmployeeForm.Status.Success:
+                        <p class="success-message">✅ @ViewData["FormMessage"]</p>
+                        break;
+                    case CRUD_MVC.ViewComponents.EmployeeForm.Status.Error:
+                        <p class="error-message">
+                            ❗  @ViewData["FormMessage"]
+                        </p>
+                        break;
+                }
             }
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

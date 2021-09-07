@@ -43,6 +43,7 @@ namespace CRUD_MVC.Controllers
         public IActionResult Index(CRUD_MVC.Models.EmployeeViewModel employeeView)
         {
             ViewData["FormMessage"] = "";
+            ViewData["FormSubmit_Status"] = ViewComponents.EmployeeForm.Status.None;
 
             if (string.IsNullOrWhiteSpace(employeeView.name))
             {
@@ -77,11 +78,18 @@ namespace CRUD_MVC.Controllers
                         employee.name = employeeView.name;
                         employee.email = employeeView.email;
                         ViewData["FormMessage"] = "Employee successfully updated";
+                        ViewData["FormSubmit_Status"] = true;
                         break;
                 }
 
                 // If returning back to the same view, clear model entries
                 ModelState.Clear();
+                ViewData["FormSubmit_Status"] = ViewComponents.EmployeeForm.Status.Success;
+            } 
+            else
+            {
+                ViewData["FormSubmit_Status"] = ViewComponents.EmployeeForm.Status.Error;
+                ViewData["FormMessage"] = "Please fill out all required fields";
             }
 
             //return RedirectToAction(nameof(Index));

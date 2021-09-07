@@ -9,6 +9,13 @@ namespace CRUD_MVC.ViewComponents
 {
     public class EmployeeForm : ViewComponent
     {
+        public enum Status
+        {
+            None,
+            Error,
+            Success
+        }
+
         public async Task<IViewComponentResult> InvokeAsync(CRUD_MVC.Models.Employee employee = null)
         {
             var model = new CRUD_MVC.Models.EmployeeViewModel();
