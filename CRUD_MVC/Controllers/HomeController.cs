@@ -43,30 +43,48 @@ namespace CRUD_MVC.Controllers
         public IActionResult Index(CRUD_MVC.Models.EmployeeViewModel employeeView)
         {
             ViewData["FormMessage"] = "";
-            CRUD_MVC.Models.Employee employee = null;
-            switch (employeeView.action)
+
+            if (string.IsNullOrWhiteSpace(employeeView.name))
             {
-                case CRUD_MVC.Models.EmployeeViewModel.Action.Add:
-                    int lastId = employees.Count > 0 ? employees.Max((x) => x.id) : 0;
-                    employee = new CRUD_MVC.Models.Employee();
-                    employee.id = lastId + 1;
-                    employee.name = employeeView.name;
-                    employee.email = employeeView.email;
-                    employees.Add(employee);
-                    ViewData["FormMessage"] = "Employee successfully added";
-                    break;
-                case CRUD_MVC.Models.EmployeeViewModel.Action.Update:
-                    employee = employees.FirstOrDefault((x) => x.id == employeeView.id);
-                    employee.name = employeeView.name;
-                    employee.email = employeeView.email;
-                    ViewData["FormMessage"] = "Employee successfully updated";
-                    break;
+                ModelState.AddModelError(nameof(employeeView.name), "A valid name is required");
+            }
+            if (string.IsNullOrWhiteSpace(employeeView.email))
+            {
+                ModelState.AddModelError(nameof(employeeView.email), "A valid email is required");
+            }
+
+            var errors = ModelState
+                .Where(x => x.Value.Errors.Count > 0)
+                .Select(x => new { x.Key, x.Value.Errors })
+                .ToList();
+
+            if (ModelState.IsValid)
+            {
+                CRUD_MVC.Models.Employee employee = null;
+                switch (employeeView.action)
+                {
+                    case CRUD_MVC.Models.EmployeeViewModel.Action.Add:
+                        int lastId = employees.Count > 0 ? employees.Max((x) => x.id) : 0;
+                        employee = new CRUD_MVC.Models.Employee();
+                        employee.id = lastId + 1;
+                        employee.name = employeeView.name;
+                        employee.email = employeeView.email;
+                        employees.Add(employee);
+                        ViewData["FormMessage"] = "Employee successfully added";
+                        break;
+                    case CRUD_MVC.Models.EmployeeViewModel.Action.Update:
+                        employee = employees.FirstOrDefault((x) => x.id == employeeView.id);
+                        employee.name = employeeView.name;
+                        employee.email = employeeView.email;
+                        ViewData["FormMessage"] = "Employee successfully updated";
+                        break;
+                }
+
+                // If returning back to the same view, clear model entries
+                ModelState.Clear();
             }
 
             //return RedirectToAction(nameof(Index));
-
-            // If returning back to the same view, clear model entries
-            ModelState.Clear();
             return ShowIndex();
         }
 
