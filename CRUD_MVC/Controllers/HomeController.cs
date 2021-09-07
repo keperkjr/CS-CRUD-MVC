@@ -61,22 +61,14 @@ namespace CRUD_MVC.Controllers
 
             if (ModelState.IsValid)
             {
-                CRUD_MVC.Models.Employee employee = null;
                 switch (employeeView.action)
                 {
                     case CRUD_MVC.Models.EmployeeViewModel.Action.Add:
-                        int lastId = employees.Count > 0 ? employees.Max((x) => x.id) : 0;
-                        employee = new CRUD_MVC.Models.Employee();
-                        employee.id = lastId + 1;
-                        employee.name = employeeView.name;
-                        employee.email = employeeView.email;
-                        employees.Add(employee);
+                        AddEmployee(employeeView);
                         ViewData["FormMessage"] = "Employee successfully added";
                         break;
                     case CRUD_MVC.Models.EmployeeViewModel.Action.Update:
-                        employee = employees.FirstOrDefault((x) => x.id == employeeView.id);
-                        employee.name = employeeView.name;
-                        employee.email = employeeView.email;
+                        UpdateEmployee(employeeView);
                         ViewData["FormMessage"] = "Employee successfully updated";
                         break;
                 }
@@ -95,6 +87,32 @@ namespace CRUD_MVC.Controllers
             return ShowIndex();
         }
 
+        private static void AddEmployee(CRUD_MVC.Models.EmployeeViewModel employeeView)
+        {
+            int lastId = employees.Count > 0 ? employees.Max((x) => x.id) : 0;
+            var employee = new CRUD_MVC.Models.Employee();
+            employee.id = lastId + 1;
+            employee.name = employeeView.name;
+            employee.email = employeeView.email;
+            employees.Add(employee);
+        }
+
+        private static void UpdateEmployee(CRUD_MVC.Models.EmployeeViewModel employeeView)
+        {
+            var employee = employees.FirstOrDefault((x) => x.id == employeeView.id);
+            employee.name = employeeView.name;
+            employee.email = employeeView.email;
+        }
+
+        private static void DeleteEmployee(int id)
+        {
+            var index = employees.FindIndex(x => x.id == id);
+            if (index > -1)
+            {
+                employees.RemoveAt(index);
+            }
+        }
+
         public IActionResult Edit(int id)
         {
             //return RedirectToAction(nameof(Index), new { id = id });
@@ -103,11 +121,7 @@ namespace CRUD_MVC.Controllers
 
         public IActionResult Delete(int id)
         {
-            var index = employees.FindIndex(x => x.id == id);
-            if (index > -1)
-            {
-                employees.RemoveAt(index);
-            }
+            DeleteEmployee(id);
             return ShowIndex();
         }
 
