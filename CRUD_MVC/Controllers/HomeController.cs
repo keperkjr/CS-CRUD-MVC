@@ -18,10 +18,13 @@ namespace CRUD_MVC.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+
         }
 
         public IActionResult Index()
         {
+            Debug.Print(Utils.Methods.GetIPv4Address(HttpContext));
+
             return ShowIndex();
         }
 
